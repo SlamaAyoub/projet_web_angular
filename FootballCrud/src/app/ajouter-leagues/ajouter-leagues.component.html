@@ -1,0 +1,89 @@
+<!-- ✅ Barre de navigation -->
+<nav class="navbar bg-info my-2">
+  <div class="container  d-flex justify-content-between align-items-center">
+    <h1>ARTICLE LIGUES</h1>
+    <button class="btn btn-success d-flex align-items-center gap-2" (click)="openAddModal()">
+      Ajouter une ligue <i class="fas fa-trophy"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- ✅ Affichage liste simple des noms -->
+<ul *ngIf="displayOnlyNames" class="list-group mt-3 container">
+  <li *ngFor="let row of LeagueData"
+      class="list-group-item list-group-item-action"
+      style="cursor: pointer;"
+      (click)="selectLeague(row)">
+    {{ row.NomLeague }}
+  </li>
+</ul>
+
+<!-- ✅ Affichage tableau complet -->
+<div *ngIf="!displayOnlyNames" class="container mt-3">
+  <table class="table">
+    <thead class="bg-info">
+      <tr>
+        <th scope="col">Ligue ID</th>
+        <th scope="col">Nom ligue</th>
+        <th scope="col">Logo</th>
+        <th scope="col">Pays</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of LeagueData">
+        <td>{{ row.id }}</td>
+        <td>{{ row.NomLeague }}</td>
+        <td>
+          <img [src]="row.logoUrl" alt="Logo de {{ row.NomLeague }}" width="50" height="50" *ngIf="row.logoUrl">
+        </td>
+        <td>{{ row.Pays }}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" (click)="onEdit(row)">Modifier</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteLeague(row)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ✅ Modal ajout/modif -->
+<div class="modal fade show d-block" *ngIf="isModalOpen" tabindex="-1" role="dialog"
+     aria-labelledby="modalLeagueLabel" aria-modal="true"
+     style="background: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="modalLeagueLabel">
+          {{ isEditMode ? 'Modifier la Ligue' : 'Ajouter une Ligue' }}
+        </h5>
+        <button type="button" class="btn-close" aria-label="Fermer" (click)="isModalOpen = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="formValue">
+          <div class="mb-3">
+            <label for="NomLeague" class="form-label">Nom de la ligue</label>
+            <input type="text" class="form-control" id="NomLeague" formControlName="NomLeague">
+          </div>
+          <div class="mb-3">
+            <label for="logoUrl" class="form-label">URL du Logo</label>
+            <input type="text" class="form-control" id="logoUrl" formControlName="logoUrl" placeholder="https://...">
+          </div>
+          <div class="mb-3">
+            <label for="Pays" class="form-label">Pays</label>
+            <input type="text" class="form-control" id="Pays" formControlName="Pays">
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button *ngIf="!isEditMode" type="button" class="btn btn-success" (click)="postLeagueDetails()">Ajouter</button>
+        <button *ngIf="isEditMode" type="button" class="btn btn-primary" (click)="updateleagueDetails()">Modifier</button>
+        <button type="button" class="btn btn-secondary" (click)="isModalOpen = false">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
